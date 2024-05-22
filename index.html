@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulário simples</title>
+    <style>
+      body {
+        border-top-style: dotted;
+        border-right-style: solid;
+        border-bottom-style: dotted;
+        border-left-style: solid;
+      }
+      p {
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="" id="id_formulario" name="formulario">
+      <br />
+      <legend>Formulário</legend>
+      <br />
+      <div>
+        <label id="id_name"
+          >Nome Completo:
+          <input
+            type="text"
+            name="nome"
+            value=""
+            id="id_name"
+            placeholder="Digite seu nome"
+          />
+        </label>
+      </div>
+
+      <div>
+        <p>Vagas disponíveis</p>
+        <label id="id_frontend">Dev Front-end JR</label>
+        <input
+          type="radio"
+          name="radio"
+          value="Dev Front-end JR"
+          id="id_frontend"
+        />
+        <label id="id_designer">Designer UI/UX</label>
+        <input
+          type="radio"
+          name="radio"
+          value=" Designer UI/UX"
+          id="id_designer"
+        />
+      </div>
+
+      <div>
+        <p>Habilidades</p>
+        <label id="id_html5">HTML5</label>
+        <input type="checkbox" name="check" value="html5" id="id_html5" />
+        <label id="id_javascript">Javascript</label>
+        <input
+          type="checkbox"
+          name="check"
+          value="javascript"
+          id="id_javascript"
+        />
+        <label id="id_css">CSS</label>
+        <input type="checkbox" name="check" value="css" id="id_css" />
+      </div>
+      <div>
+        <label id="id_curso"
+          >Curso: <textarea name="curso_textarea" id="id_textarea"></textarea>
+        </label>
+      </div>
+      <div>
+        <button type="submit" value="enviar" id="id_enviar">Enviar</button>
+      </div>
+    </form>
+
+    <script type="module">
+ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-database.js";
+
+      const firebaseConfig = {
+
+apiKey: "AIzaSyAn7O4R-DSvRSssvdo6az9pzDKmB8HfNSQ",
+
+authDomain: "sadas-c33e7.firebaseapp.com",
+
+databaseURL: "https://sadas-c33e7-default-rtdb.firebaseio.com",
+
+projectId: "sadas-c33e7",
+
+storageBucket: "sadas-c33e7.appspot.com",
+
+messagingSenderId: "704895285365",
+
+appId: "1:704895285365:web:a836ddf9ca798d6628603c",
+
+measurementId: "G-L37W93BCD8"
+
+};
+
+   
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase();
+
+      let form = document.getElementById("id_formulario");
+      form.addEventListener("submit", (evento) => {
+        evento.preventDefault();
+
+        let nome = form.nome.value;
+        let vaga = form.radio.value;
+        let curso = form.curso_textarea.value;
+
+        let checks = document.querySelectorAll('[type="checkbox"]:checked');
+        let vetor_habilidades = [];
+        checks.forEach((checkbox) => {
+          vetor_habilidades.push(checkbox.value);
+        });
+
+        // let temp = document.querySelectorAll(`[name=habilidades]:checked`);
+        // temp.forEach((valor, index)=>{
+        // vetor[index] = valor.value;
+        // console.log(index, valor.value);
+
+        alert(`Nome: ${nome} \nVaga: ${vaga} \nCurso: ${curso} \nHabilidades: ${vetor_habilidades.join(", ")}`);
+        console.log(`Nome: ${nome} \nVaga: ${vaga} \nCurso: ${curso} \nHabilidades: ${vetor_habilidades.join(", ")}`);
+
+        const usersRef = ref(database, "users");
+        push(usersRef, {
+          nome: nome,
+          vaga: vaga,
+          curso: curso,
+          habilidades: vetor_habilidades
+        })
+          .then(() => {
+            console.log("Dados enviados com sucesso!");
+          })
+          .catch((error) => {
+            console.error("Erro ao enviar dados:", error);
+          });
+      });
+      
+    </script>
+  </body>
+</html>
+
+
